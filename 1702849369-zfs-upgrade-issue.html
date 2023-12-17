@@ -59,7 +59,8 @@ While it didn't exactly cause any issues with the zfs installation there was cur
 </p>
 
 <pre bash>
-sudo -i 
+## Run as root
+# sudo -i 
 
 git clone https://github.com/openzfs/zfs
 
@@ -83,6 +84,12 @@ echo "$depmod_cont" &gt; /etc/depmod.d/ubuntu.conf
 
 ## Build and intall
 make install
+
+## Run ldconfig
+ldconfig
+
+## Run depmod
+depmod
 </pre>
 
 
