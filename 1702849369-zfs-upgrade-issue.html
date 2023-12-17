@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="style.css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
+<title>ZFS Upgrade Issue</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+
+
+<hr />
+<p>
+<a href="index.html">Index</a>
+<hr />
+</p>
+
+<p>
+last 5 posts
+<hr />
+</p>
+
+<ul>
+<li>
+<a href="1701545547-no-tickets.html">No Tickets</a>
+
+<li>
+<a href="1700863814-auvik-trial.html">Auvik Trial</a>
+
+<li>
+<a href="1700345096-busy-week.html">Busy Week</a>
+
+<li>
+<a href="1700104768-new-job-offer.html">New Job Offer</a>
+
+<li>
+<a href="1699564352-webhooks.html">Webhooks</a>
+
+</ul>
+<p>
+<span id="-Date:"></span><strong id="Date:">Date:</strong> 2023/12/17
+</p>
+
+<p>
+<span id="-Author:"></span><strong id="Author:">Author:</strong> Tristan Ancelet
+</p>
+
+<div id="ZFS Upgrade Issue"><h1 id="ZFS Upgrade Issue" class="header"><a href="#ZFS Upgrade Issue">ZFS Upgrade Issue</a></h1></div>
+<div id="ZFS Upgrade Issue-Background"><h2 id="Background" class="header"><a href="#ZFS Upgrade Issue-Background">Background</a></h2></div>
+<hr />
+<p>
+I have an DIY Ubuntu NAS (one of the first few linux installs), and I was having aggravations with the zfs-dkms package that I had setup a couple of years ago to host raided pools for my NAS setup. However, recently during an update I noticed the kernel was updated on the machine to 6.2.0-39-generic which now caused the zfs-dkms to throw errors when apt would run mkinitcpio as the zfs-dkms-2.1.5 module only supported up to kernel 5.19.
+</p>
+
+<p>
+While it didn't exactly cause any issues with the zfs installation there was currently (it still functioned fine even with the new kernel). I got tired of it so I decided to compile openzfs from source and install it on my system.
+</p>
+
+<pre bash>
+sudo -i 
+
+git clone https://github.com/openzfs/zfs
+
+## I was missing a few dependencies but installed them like so
+apt install uuid-dev libblkid-dev
+
+cd zfs
+## Run the autoconf autogen script
+./autogen.sh
+## Run the configure script to build the Makefile
+./configure
+
+## Build the module to make sure everything goes ok
+make 
+
+## Had to add the extra modules to the depmod search ath
+depmod_cont="$(&lt;/etc/depmod.d/ubuntu.conf)"
+## Replace "search" with "search extra" to put the extra modules into the depmod path
+depmod_cont="${depmod_cont/search/search extra}"
+echo "$depmod_cont" &gt; /etc/depmod.d/ubuntu.conf
+
+## Build and intall
+make install
+</pre>
+
+
+<div id="ZFS Upgrade Issue-Other issues"><h2 id="Other issues" class="header"><a href="#ZFS Upgrade Issue-Other issues">Other issues</a></h2></div>
+<div id="ZFS Upgrade Issue-Other issues-Zpools not importing"><h3 id="Zpools not importing" class="header"><a href="#ZFS Upgrade Issue-Other issues-Zpools not importing">Zpools not importing</a></h3></div>
+<hr />
+<p>
+Upon finishing installation and reboot I noticed that when the server rebooted it didn't mount the pools on boot. I always had to import them manually <code>zpool import data &amp;&amp; zpool import media</code>
+</p>
+
+<p>
+I was confused because the configs setup by my dkms installation were still valid <code>/etc/defaults/zfs</code>.
+</p>
+
+<p>
+While it took me an hour to figure it out, I eventually figured out what was wrong and why zfs wasn't importing my pools.
+</p>
+
+<p>
+the services configured in /usr/lib/systemd/system were setup with the path that bsd/unix would use for the zpool.cache file (<code>/usr/local/etc/zfs/zpool.cache</code>) instead of what zfs was configured with on my zfs-dkms installation (<code>/etc/zfs/zpool.cache</code>).
+</p>
+
+<div id="ZFS Upgrade Issue-Other issues-Resolution"><h3 id="Resolution" class="header"><a href="#ZFS Upgrade Issue-Other issues-Resolution">Resolution</a></h3></div>
+<hr />
+<p>
+All I ended up needing to do was change the path's that the service files from <code>/usr/local/etc/zfs/zpool.cache</code> to <code>/etc/zfs/zpool.cache</code> (wherever applicable).
+</p>
+
+<p>
+After doing that and rebooting the pools were imported and mounted as they previously had.
+</p>
+
+</body>
+</html>
