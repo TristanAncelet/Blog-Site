@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../../style.css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<title>Webhooks</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+
+
+<hr />
+<p>
+<a href="index.html">Index</a>
+<hr />
+</p>
+
+<p>
+last 5 posts
+<hr />
+</p>
+
+<ul>
+<li>
+<a href="1699558725-ref-290-submitted.html">REF-290 Submitted</a>
+
+<li>
+<a href="1699375988-ref-209-start.html">REF-290: Start</a>
+
+<li>
+<a href="1698642000-first-ticket.html">First Ticket</a>
+
+<li>
+<a href="1693890000-blog-issue.html">Blog Issue</a>
+
+<li>
+<a href="1693630800-hello-world.html">Hello World</a>
+
+</ul>
+<hr />
+<p>
+<span id="-Date:"></span><strong id="Date:">Date:</strong> 2023/11/09
+</p>
+
+<p>
+<span id="-Author:"></span><strong id="Author:">Author:</strong> Tristan Ancelet
+</p>
+
+<div id="Webhooks"><h1 id="Webhooks" class="header"><a href="#Webhooks">Webhooks</a></h1></div>
+<div id="Webhooks-gitea"><h2 id="gitea" class="header"><a href="#Webhooks-gitea">gitea</a></h2></div>
+<hr />
+<p>
+I just recently started hosting my own gitserver (gitea). Had a few issues setting it up due to some default values in the gitea.service file (that prevented the program from using port 80).
+</p>
+
+<p>
+After getting that dealt with I decided to see what I could do with gitea's support for webhooks. So I decided to setup a webhook that will handle updating my blog when I push to my <a href="https://git.arcanium.tech/tristan/blog-site">Blog Repo</a>. 
+</p>
+
+<p>
+Once I push a new addition to the repo it now automatically makes a post request to my webhook server that will automatically update my website without manual intervention.
+</p>
+
+
+<div id="Webhooks-This Post"><h2 id="This Post" class="header"><a href="#Webhooks-This Post">This Post</a></h2></div>
+<hr />
+<p>
+This post was simply being used to test that functionality in gitea. 
+</p>
+
+</body>
+</html>
